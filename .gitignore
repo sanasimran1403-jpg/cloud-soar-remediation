@@ -1,0 +1,7 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.zip
+out*.json
+key_entries.json
+key_event.json

@@ -1,0 +1,5 @@
+[{
+  "Source": "soar.simulator",
+  "DetailType": "AWS API Call via CloudTrail",
+  "Detail": "{\"eventSource\":\"s3.amazonaws.com\",\"eventName\":\"PutBucketAcl\",\"requestParameters\":{\"bucketName\":\"cloud-soar-test-bucket\"}}"
+}]
