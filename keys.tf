@@ -42,6 +42,9 @@ resource "aws_iam_role_policy" "disable_key" {
 }
 
 resource "aws_lambda_function" "disable_key" {
+  #checkov:skip=CKV_AWS_117: The function only calls the Slack webhook and AWS APIs. A VPC would add NAT egress without isolating anything useful.
+  #checkov:skip=CKV_AWS_272: Code signing is out of scope for this project. Code ships through reviewed CI.
+  #checkov:skip=CKV_AWS_173: The only environment variable is the audit table name, which is not sensitive.
   function_name    = "${var.project}-disable-key"
   role             = aws_iam_role.disable_key.arn
   handler          = "disable_key.handler"

@@ -40,6 +40,7 @@ resource "aws_iam_role_policy" "lambda_baseline" {
 }
 
 resource "aws_cloudwatch_log_group" "sfn" {
+  #checkov:skip=CKV_AWS_158: Logs hold errors only because include_execution_data is false. Roadmap: customer-managed key.
   name              = "/aws/vendedlogs/states/${var.project}"
   retention_in_days = 365
 }

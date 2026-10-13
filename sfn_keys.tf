@@ -12,6 +12,7 @@ resource "aws_iam_role_policy" "sfn_keys" {
 }
 
 resource "aws_sfn_state_machine" "keys" {
+  #checkov:skip=CKV_AWS_285: Execution data is deliberately not logged because the state input contains the approval task token.
   name     = "${var.project}-key-flow"
   role_arn = aws_iam_role.sfn.arn
 

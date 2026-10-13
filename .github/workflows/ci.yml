@@ -40,6 +40,6 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - run: pip install checkov
-      # Soft fail for now: the findings become the Phase B hardening backlog.
-      - run: checkov -d . --framework terraform --soft-fail --compact
+      - run: pip install "checkov==3.3.29"
+      # Hard gate: every finding is either fixed or skipped inline with a reason.
+      - run: checkov -d . --framework terraform --compact --quiet

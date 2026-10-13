@@ -37,6 +37,8 @@ resource "aws_iam_role_policy" "approve" {
 }
 
 resource "aws_lambda_function" "approve" {
+  #checkov:skip=CKV_AWS_117: The function only calls the Slack webhook and AWS APIs. A VPC would add NAT egress without isolating anything useful.
+  #checkov:skip=CKV_AWS_272: Code signing is out of scope for this project. Code ships through reviewed CI.
   function_name    = "${var.project}-approve"
   role             = aws_iam_role.approve.arn
   handler          = "approve.handler"
@@ -59,11 +61,13 @@ resource "aws_lambda_function" "approve" {
 }
 
 resource "aws_lambda_function_url" "approve" {
+  #checkov:skip=CKV_AWS_258: Slack approval links must work without AWS credentials. Access is gated by an unguessable single-use task token plus a confirmation step.
   function_name      = aws_lambda_function.approve.function_name
   authorization_type = "NONE"
 }
 
 resource "aws_lambda_permission" "approve_url" {
+  #checkov:skip=CKV_AWS_301: Public by design for Slack approval links. See the function URL note.
   statement_id           = "AllowPublicFunctionUrl"
   action                 = "lambda:InvokeFunctionUrl"
   function_name          = aws_lambda_function.approve.function_name

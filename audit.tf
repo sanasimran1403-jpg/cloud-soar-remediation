@@ -1,7 +1,12 @@
 resource "aws_dynamodb_table" "audit" {
+  #checkov:skip=CKV_AWS_119: AWS-owned encryption at rest is on by default. Roadmap: customer-managed key.
   name         = "${var.project}-audit"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "audit_id"
+
+  point_in_time_recovery {
+    enabled = true
+  }
 
   attribute {
     name = "audit_id"

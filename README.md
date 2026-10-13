@@ -109,6 +109,23 @@ the webhook URL, which is why `*.tfstate*` is in `.gitignore`.
 | Key, deny | Key `Active`, audit `denied_by_human` | Passed |
 | Key, timeout | Key `Active`, audit `no_action_timeout` | Passed |
 
+## Security scanning
+
+CI runs Checkov as a hard gate. Every finding is either fixed or skipped inline in the
+Terraform with a written reason (search for `checkov:skip`). The skips fall into
+these groups:
+
+- **Test fixture bucket**: the tests deliberately make it public.
+- **Lambda in a VPC and code signing**: no isolation benefit for this workload.
+- **Function URL without auth**: Slack links must work without AWS credentials.
+- **Customer-managed KMS keys and Secrets Manager**: on the roadmap.
+- **Step Functions execution data**: not logged because the state input contains the approval task token.
+
+Known limits of the hardening:
+
+- The dead-letter queue only receives failures from asynchronous invocations. Step Functions invokes the Lambdas synchronously, so today it is defense in depth.
+- Reserved concurrency can fail on new AWS accounts with low limits. Set `lambda_reserved_concurrency = -1` there.
+
 ## Limitations
 
 - **Simulated detections.** LocalStack does not emulate GuardDuty, AWS Config, or CloudTrail event delivery, so the tests send events with the same shape (source `soar.simulator`). The rules also match the real sources (`aws.s3`, `aws.guardduty`), but this has not been verified on a real AWS account.

@@ -1,5 +1,12 @@
 # Test bucket that we will make public
 resource "aws_s3_bucket" "test" {
+  #checkov:skip=CKV2_AWS_6: Test fixture. The tests deliberately make this bucket public, so a public access block would defeat them.
+  #checkov:skip=CKV2_AWS_61: Test fixture holding no data. A lifecycle configuration is not needed.
+  #checkov:skip=CKV2_AWS_62: Test fixture. Events come from the simulator, not bucket notifications.
+  #checkov:skip=CKV_AWS_144: Test fixture. Cross-region replication is not needed.
+  #checkov:skip=CKV_AWS_145: Test fixture holding no data. KMS encryption is not needed.
+  #checkov:skip=CKV_AWS_18: Test fixture. Access logging is not needed.
+  #checkov:skip=CKV_AWS_21: Test fixture holding no data. Versioning is not needed.
   bucket        = "${var.project}-test-bucket"
   force_destroy = true
 }
@@ -59,6 +66,9 @@ resource "aws_iam_role_policy" "remediate" {
 }
 
 resource "aws_lambda_function" "remediate" {
+  #checkov:skip=CKV_AWS_117: The function only calls the Slack webhook and AWS APIs. A VPC would add NAT egress without isolating anything useful.
+  #checkov:skip=CKV_AWS_272: Code signing is out of scope for this project. Code ships through reviewed CI.
+  #checkov:skip=CKV_AWS_173: The only environment variable is the audit table name, which is not sensitive.
   function_name    = "${var.project}-remediate-s3"
   role             = aws_iam_role.remediate.arn
   handler          = "remediate_s3.handler"

@@ -30,6 +30,9 @@ resource "aws_iam_role_policy" "notify" {
 }
 
 resource "aws_lambda_function" "notify" {
+  #checkov:skip=CKV_AWS_117: The function only calls the Slack webhook and AWS APIs. A VPC would add NAT egress without isolating anything useful.
+  #checkov:skip=CKV_AWS_272: Code signing is out of scope for this project. Code ships through reviewed CI.
+  #checkov:skip=CKV_AWS_173: Default Lambda environment encryption is used. Roadmap: move the webhook URL to Secrets Manager with a customer-managed key.
   function_name    = "${var.project}-notify"
   role             = aws_iam_role.notify.arn
   handler          = "notify_slack.handler"
