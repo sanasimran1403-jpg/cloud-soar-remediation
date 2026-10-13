@@ -1,4 +1,11 @@
 import approve
+from botocore.exceptions import ClientError
+
+
+def _invalid_token():
+    return ClientError(
+        {"Error": {"Code": "InvalidToken", "Message": "Invalid token"}}, "SendTaskSuccess"
+    )
 
 
 class FakeSfn:
@@ -8,12 +15,12 @@ class FakeSfn:
 
     def send_task_success(self, **kwargs):
         if self.fail:
-            raise RuntimeError("boom")
+            raise _invalid_token()
         self.calls.append(("success", kwargs))
 
     def send_task_failure(self, **kwargs):
         if self.fail:
-            raise RuntimeError("boom")
+            raise _invalid_token()
         self.calls.append(("failure", kwargs))
 
 

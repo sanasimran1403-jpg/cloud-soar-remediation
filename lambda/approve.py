@@ -4,6 +4,7 @@ import os
 from urllib.parse import quote
 
 import boto3
+from botocore.exceptions import ClientError
 
 
 def _sfn():
@@ -68,6 +69,6 @@ def handler(event, context):
             taskToken=token, error="Denied", cause="Denied by human via Slack link"
         )
         return _page(200, "<h3>Denied</h3><p>No action taken. Decision recorded.</p>")
-    except Exception as e:
+    except ClientError as e:
         print("approval error:", e)
         return _page(409, "<h3>Could not process</h3><p>Link expired or already used.</p>")

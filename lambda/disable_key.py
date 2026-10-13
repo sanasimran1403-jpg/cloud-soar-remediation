@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import boto3
 
@@ -36,7 +36,7 @@ def handler(event, context):
 
     record = {
         "audit_id": str(uuid.uuid4()),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "action": "disable_access_key",
         "resource": f"iam:user/{user}/{key_id}",
         "trigger": detail.get("type", "unknown"),

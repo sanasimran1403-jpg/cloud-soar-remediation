@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import boto3
 
@@ -35,7 +35,7 @@ def handler(event, context):
 
     record = {
         "audit_id": str(uuid.uuid4()),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "action": "block_public_access",
         "resource": f"s3://{bucket}",
         "trigger": detail.get("eventName", "unknown"),

@@ -1,7 +1,7 @@
 import boto3
-import pytest
-
 import disable_key
+import pytest
+from botocore.exceptions import ClientError
 from conftest import audit_items
 
 
@@ -39,7 +39,7 @@ def test_key_is_disabled_not_deleted_and_audited(aws):
 
 
 def test_unknown_user_is_audited_as_failed_and_reraised(aws):
-    with pytest.raises(Exception):
+    with pytest.raises(ClientError):
         disable_key.handler(_finding("nobody", "AKIAFAKEFAKEFAKE1234"), None)
 
     assert audit_items()[0]["status"]["S"] == "failed"

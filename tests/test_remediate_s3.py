@@ -1,7 +1,7 @@
 import boto3
 import pytest
-
 import remediate_s3
+from botocore.exceptions import ClientError
 from conftest import audit_items
 
 
@@ -48,7 +48,7 @@ def test_public_bucket_is_made_private_and_audited(aws):
 
 
 def test_missing_bucket_is_audited_as_failed_and_reraised(aws):
-    with pytest.raises(Exception):
+    with pytest.raises(ClientError):
         remediate_s3.handler(_event("does-not-exist"), None)
 
     items = audit_items()
