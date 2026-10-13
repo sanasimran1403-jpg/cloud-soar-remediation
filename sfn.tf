@@ -34,6 +34,16 @@ resource "aws_sfn_state_machine" "soar" {
   name     = "${var.project}-s3-flow"
   role_arn = aws_iam_role.sfn.arn
 
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.sfn.arn}:*"
+    include_execution_data = false
+    level                  = "ERROR"
+  }
+
+  tracing_configuration {
+    enabled = true
+  }
+
   definition = jsonencode({
     Comment = "S3 exposure: ask for approval, auto-fix on timeout"
     StartAt = "NotifyAndWait"

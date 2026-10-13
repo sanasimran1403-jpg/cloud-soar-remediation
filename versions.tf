@@ -30,5 +30,6 @@ provider "aws" {
     stepfunctions  = "http://localhost:4566"
     dynamodb       = "http://localhost:4566"
     cloudwatchlogs = "http://localhost:4566"
+    sqs            = "http://localhost:4566"
   }
 }

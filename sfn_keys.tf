@@ -12,8 +12,18 @@ resource "aws_iam_role_policy" "sfn_keys" {
 }
 
 resource "aws_sfn_state_machine" "keys" {
-  name       = "${var.project}-key-flow"
-  role_arn   = aws_iam_role.sfn.arn
+  name     = "${var.project}-key-flow"
+  role_arn = aws_iam_role.sfn.arn
+
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.sfn.arn}:*"
+    include_execution_data = false
+    level                  = "ERROR"
+  }
+
+  tracing_configuration {
+    enabled = true
+  }
   depends_on = [aws_iam_role_policy.sfn_keys]
 
   definition = jsonencode({

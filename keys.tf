@@ -35,7 +35,7 @@ resource "aws_iam_role_policy" "disable_key" {
       {
         Effect   = "Allow"
         Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
-        Resource = "*"
+        Resource = "arn:aws:logs:${var.region}:*:log-group:/aws/lambda/${var.project}-*:*"
       }
     ]
   })
@@ -48,7 +48,19 @@ resource "aws_lambda_function" "disable_key" {
   runtime          = "python3.12"
   filename         = data.archive_file.disable_key.output_path
   source_code_hash = data.archive_file.disable_key.output_base64sha256
-  timeout          = 30
+
+  reserved_concurrent_executions = var.lambda_reserved_concurrency
+
+  dead_letter_config {
+    target_arn = aws_sqs_queue.dlq.arn
+  }
+
+  tracing_config {
+    mode = "Active"
+  }
+
+  depends_on = [aws_iam_role_policy.lambda_baseline]
+  timeout    = 30
 
   environment {
     variables = {

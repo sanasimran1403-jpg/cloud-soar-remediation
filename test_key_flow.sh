@@ -8,6 +8,7 @@ KEYUSER=leaky-test-user
 
 SM=$(aws stepfunctions list-state-machines \
   --query "stateMachines[?name=='cloud-soar-key-flow'].stateMachineArn" --output text)
+[ -n "$SM" ] || { echo "State machine not found. Run ./up.sh first."; exit 1; }
 
 # Stop any executions still waiting from earlier runs
 for E in $(aws stepfunctions list-executions --state-machine-arn "$SM" \
