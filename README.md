@@ -1,5 +1,7 @@
 # Cloud SOAR: Automated S3 and IAM Key Remediation
 
+![ci](https://github.com/sanasimran1403-jpg/cloud-soar-remediation/actions/workflows/ci.yml/badge.svg)
+
 A small security orchestration (SOAR) pipeline that detects risky cloud events,
 asks a human for approval in Slack, remediates automatically, and writes an
 audit record for every decision. Everything is defined in Terraform and runs
